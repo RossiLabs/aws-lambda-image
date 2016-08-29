@@ -52,8 +52,14 @@ class ImageResizer {
                     reject ("gm err:", err);
                 }
                 else {
+                    let dir = this.options.directory || image.dirName;
+
+                    if ( dir ) {
+                        dir = dir.replace(/\/$/, "") + "/";
+                    }
+
                     resolve(new ImageData(
-                        image.fileName,
+                        dir + image.baseName,
                         image.bucketName,
                         buffer,
                         image.headers,

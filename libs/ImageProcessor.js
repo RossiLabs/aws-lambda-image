@@ -41,6 +41,7 @@ class ImageProcessor {
                 unescape(this.s3Object.object.key.replace(/\+/g, ' '))
             )
             .then((imageData) => {
+                console.log("S3 GetObject Result:", imageData);
                 this.processImage(imageData, config)
                 .then((results) => {
                     S3.putObjects(results)
