@@ -21,6 +21,8 @@ exports.handler = (event, context) => {
         JSON.parse(fs.readFileSync(configPath, { encoding: "utf8" }))
     );
 
+    console.log(JSON.stringify(event));
+
     processor.run(config)
     .then((proceedImages) => {
         console.log("OK, numbers of " + proceedImages.length + " images has proceeded.");

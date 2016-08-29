@@ -1,7 +1,7 @@
 "use strict";
 
 const ImageResizer = require("./ImageResizer");
-const ImageReducer = require("./ImageReducer");
+// const ImageReducer = require("./ImageReducer");
 const S3           = require("./S3");
 
 class ImageProcessor {
@@ -78,15 +78,15 @@ class ImageProcessor {
             return this.execResizeImage(option, imageData);
         });
 
-        if ( config.exists("reduce") ) {
-            const reduce = config.get("reduce");
+        // if ( config.exists("reduce") ) {
+        //     const reduce = config.get("reduce");
 
-            if ( ! reduce.bucket ) {
-                reduce.bucket = config.get("bucket");
-            }
-            reduce.jpegOptimizer = reduce.jpegOptimizer || jpegOptimizer;
-            promiseList.unshift(this.execReduceImage(reduce, imageData));
-        }
+        //     if ( ! reduce.bucket ) {
+        //         reduce.bucket = config.get("bucket");
+        //     }
+        //     reduce.jpegOptimizer = reduce.jpegOptimizer || jpegOptimizer;
+        //     promiseList.unshift(this.execReduceImage(reduce, imageData));
+        // }
 
         return Promise.all(promiseList);
     }
@@ -104,12 +104,13 @@ class ImageProcessor {
             const resizer = new ImageResizer(option);
 
             resizer.exec(imageData)
-            .then((resizedImage) => {
-                const reducer = new ImageReducer(option);
+            .then((resizedImage) => resolve(resizedImage))
+            // .then((resizedImage) => {
+            //     const reducer = new ImageReducer(option);
 
-                return reducer.exec(resizedImage);
-            })
-            .then((reducedImage) => resolve(reducedImage))
+            //     return reducer.exec(resizedImage);
+            // })
+            // .then((reducedImage) => resolve(reducedImage))
             .catch((message) => reject(message));
         });
     }
@@ -122,15 +123,15 @@ class ImageProcessor {
      * @param ImageData imageData
      * @return Promise
      */
-    execReduceImage(option, imageData) {
-        return new Promise((resolve, reject) => {
-            const reducer = new ImageReducer(option);
+    // execReduceImage(option, imageData) {
+    //     return new Promise((resolve, reject) => {
+    //         const reducer = new ImageReducer(option);
 
-            reducer.exec(imageData)
-            .then((reducedImage) => resolve(reducedImage))
-            .catch((message) => reject(message));
-        });
-    }
+    //         reducer.exec(imageData)
+    //         .then((reducedImage) => resolve(reducedImage))
+    //         .catch((message) => reject(message));
+    //     });
+    // }
 }
 
 module.exports = ImageProcessor;

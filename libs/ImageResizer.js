@@ -1,7 +1,8 @@
 "use strict";
 
 const ImageData   = require("./ImageData");
-const ImageMagick = require("imagemagick");
+// const ImageMagick = require("imagemagick");
+const gm = require("gm").subClass({ imageMagick: true });
 
 class ImageResizer {
 
@@ -44,14 +45,17 @@ class ImageResizer {
         }
 
         return new Promise((resolve, reject) => {
-            ImageMagick.resize(params, (err, stdout, stderr) => {
-                if ( err || stderr ) {
-                    reject("ImageMagick err" + (err || stderr));
-                } else {
+            gm(image.data, image.fileName)
+            .resize(params.width, params.height)
+            .toBuffer(image.type, function (err, buffer) {
+                if (err) {
+                    reject ("gm err:", err);
+                }
+                else {
                     resolve(new ImageData(
                         image.fileName,
                         image.bucketName,
-                        stdout,
+                        buffer,
                         image.headers,
                         acl
                     ));
